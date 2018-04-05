@@ -12,9 +12,6 @@ spec:
   - name: dockersocket
     hostPath:
       path: /var/run/docker.sock
-  - name: composer-card-store
-    persistentVolumeClaim:
-      claimName: composer-pvc
   containers:
   - name: cryptogen
     image: ibmblockchain/fabric-tools:1.0.3
@@ -52,8 +49,6 @@ spec:
     volumeMounts:
     - mountPath: /shared
       name: shared
-    - mountPath: /home/composer/.composer
-      name: composer-card-store
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
