@@ -11,6 +11,8 @@ On the other hand, kubectl must be pointing to the minikube cluster. Ensure this
 
 Now, go to the scripts folder to start the process ```cd scripts```
 
+![minikube dashboard](/images/Architecture.png)
+
 ### 1. Create storage
 
 The first thing is create a shared-storage. It will set the environment variable _KUBECONFIG_FOLDER_ to the _kube-config_ folder located into the root folder.
