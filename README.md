@@ -95,3 +95,29 @@ Finally, the last step is to instantiate the chaincode on one peer. To do so exe
 > 3.2. Now, it will install the desired chaincode on all the peers. Notice that the environment variables `CHAINCODE_NAME="example02"`, ` CHAINCODE_VERSION="v1"`, `PEER_MSPID="Org1MSP"`, `CHANNEL_NAME="channel1"`, `PEER_ADDRESS="blockchain-org1peer1:30110"` and `MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp"` are required to select the desired peer and chaincode to instantiate.
 
 ![minikube dashboard](/images/instantiate_chaincode.png)
+
+### 7. Test application
+
+Once deployed and configured the blockchain, the next step it test the application. In this case, it consists on a simple transfer app between two entities.
+
+1. connect to one peer, to do so execute `kubectl get pods`. Imagine that you want to be connected to the org1peer1:
+
+![minikube dashboard](/images/pods.png)
+
+2. Execute `kubectl exec -it blockchain-org1peer1-64b578c597-wz4j9 bash`. Once inside you must set the `CORE_PEER_ADDRESS=0.0.0.0:30110` env variable to work properly (this step is to fix an unknown connection error)
+
+3. Test the application:
+
+`peer chaincode query -C channel1 -n example02 -c '{"Args":["query","a"]}'`
+
+![minikube dashboard](/images/query1.png)
+
+`peer chaincode invoke -C channel1 -n example02 -c '{"Args":["invoke","a","b","40"]}'`
+
+![minikube dashboard](/images/invoke1.png)
+![minikube dashboard](/images/invoke2.png)
+
+`peer chaincode query -C channel1 -n example02 -c '{"Args":["query","a"]}'`
+
+![minikube dashboard](/images/query2.png)
+
