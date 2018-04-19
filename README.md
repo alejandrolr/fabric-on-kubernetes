@@ -45,9 +45,8 @@ With couchdb, it will execute ``kubectl create -f ${KUBECONFIG_FOLDER}/blockchai
 
 After creating the blockchain components, one channel (at least) is needed. To create a channel called channel 1 from the Org1MSP peer execute the following order:
 
-```
-PEER_MSPID="Org1MSP" CHANNEL_NAME="channel1" create/create_channel.sh
-```
+```PEER_MSPID="Org1MSP" CHANNEL_NAME="channel1" create/create_channel.sh```
+
 > 3.1. Internally, it will find if there is a previous channel pod created. If it exists it will be deleted using the script `delete/delete_channel-pods.sh`.
 
 > 3.2. Now, it will create the channel. Notice that the environment variables `PEER_MSPID="Org1MSP"` and `CHANNEL_NAME="channel1"` are required to select the peer who will create the channel and the channel name.  
@@ -59,12 +58,10 @@ The execution will launch the order `kubectl create -f ${KUBECONFIG_FOLDER}/crea
 
 After creating the channel, the desired peers that will form the network need to join this channel (one order per peer):
 
-```
-CHANNEL_NAME="channel1" PEER_MSPID="Org1MSP" PEER_ADDRESS="blockchain-org1peer1:30110" MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp" create/join_channel.sh
-```
+```CHANNEL_NAME="channel1" PEER_MSPID="Org1MSP" PEER_ADDRESS="blockchain-org1peer1:30110" MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp" create/join_channel.sh```
 
-```
-CHANNEL_NAME="channel1" PEER_MSPID="Org2MSP" PEER_ADDRESS="blockchain-org2peer1:30210" PEER_ADDRESS="blockchain-org2peer1:30210" create/join_channel.sh
+
+```CHANNEL_NAME="channel1" PEER_MSPID="Org2MSP" PEER_ADDRESS="blockchain-org2peer1:30210" MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp" create/join_channel.sh
 ```
 
 > 3.1. Internally, it will find if there is a previous join channel pod created. If it exists it will be deleted using the script `delete/delete_channel-pods.sh`.
@@ -78,13 +75,9 @@ The execution will launch the order `kubectl create -f ${KUBECONFIG_FOLDER}/join
 
 All the peers on the channel must have installed the chaincode, so execute this order to install your chaincode:
 
-```
-CHAINCODE_NAME="example02" CHAINCODE_VERSION="v1" MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp"  PEER_MSPID="Org1MSP" PEER_ADDRESS="blockchain-org1peer1:30110" create/chaincode_install.sh
-```
+```CHAINCODE_NAME="example02" CHAINCODE_VERSION="v1" MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp"  PEER_MSPID="Org1MSP" PEER_ADDRESS="blockchain-org1peer1:30110" create/chaincode_install.sh```
 
-```
-CHAINCODE_NAME="example02" CHAINCODE_VERSION="v1" MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp"  PEER_MSPID="Org2MSP" PEER_ADDRESS="blockchain-org2peer1:30210" create/chaincode_install.sh
-```
+```CHAINCODE_NAME="example02" CHAINCODE_VERSION="v1" MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp"  PEER_MSPID="Org2MSP" PEER_ADDRESS="blockchain-org2peer1:30210" create/chaincode_install.sh```
 
 > 3.1. Internally, it will find if there is a previous install chaincode pod created. If it exists it will be deleted using the script `delete/delete_chaincode-install.sh`.
 
@@ -97,9 +90,7 @@ The execution will launch the order `kubectl create -f ${KUBECONFIG_FOLDER}/chai
 
 Finally, the last step is to instantiate the chaincode on one peer. To do so execute:
 
-```
-CHANNEL_NAME="channel1" CHAINCODE_NAME="example02" CHAINCODE_VERSION="v1" MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp"  PEER_MSPID="Org1MSP" PEER_ADDRESS="blockchain-org1peer1:30110" create/chaincode_instantiate.sh
-```
+```CHANNEL_NAME="channel1" CHAINCODE_NAME="example02" CHAINCODE_VERSION="v1" MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp"  PEER_MSPID="Org1MSP" PEER_ADDRESS="blockchain-org1peer1:30110" create/chaincode_instantiate.sh```
 
 > 3.1. Internally, it will find if there is a previous install chaincode pod created. If it exists it will be deleted using the script `delete/delete_chaincode-instantiate.sh`.
 
