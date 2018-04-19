@@ -25,9 +25,9 @@ The first thing is create a shared-storage. It will set the environment variable
 
 Now, al the blockchain items will be created. Execute:
 
-```./create/create-blockchain.sh ```
+```./create/create_blockchain.sh ```
 
-Or ```./create/create-blockchain.sh --with-couchdb``` if couchdb is desired.
+Or ```./create/create_blockchain.sh --with-couchdb``` if couchdb is desired.
 
 > 2.1. Internally, it will execute ``kubectl create -f ${KUBECONFIG_FOLDER}/blockchain-services.yaml`` and create four services called: blockchain-ca, blockchain-orderer, blockchain-org1peer1 and blockchain-org2peer1.  
 With couchdb, it will execute ``kubectl create -f ${KUBECONFIG_FOLDER}/blockchain-couchdb-services.yaml`` and create the same services as before but including two more: blockchain-couchdb1 and blockchain-couchdb2.
@@ -79,7 +79,7 @@ All the peers on the channel must have installed the chaincode, so execute this 
 
 > 3.1. Internally, it will find if there is a previous install chaincode pod created. If it exists it will be deleted using the script `delete/delete_chaincode-install.sh`.
 
-> 3.2. Now, it will install the desired chaincode on all the peers. Notice that the environment variables `CHAINCODE_NAME="example02"`, ` CHAINCODE_VERSION="v1"`, `PEER_MSPID="Org1MSP"`, `CHANNEL_NAME="channel1"`, `PEER_ADDRESS="blockchain-org1peer1:30110"` and `MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp"` are required to select the desired peer and chaincode.   
+> 3.2. Now, it will install the desired chaincode on all the peers. Notice that the environment variables `CHAINCODE_NAME="example02"`, ` CHAINCODE_VERSION="v1"`, `PEER_MSPID="Org1MSP"`, `CHANNEL_NAME="channel1"`, `PEER_ADDRESS="blockchain-org1peer1:30110"` and `MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp"` are required to select the desired peer and chaincode.   
 The execution will launch the order `kubectl create -f ${KUBECONFIG_FOLDER}/chaincode_install.yaml`, where chaincode_install.yaml is a modification of kube_config/chaincode_install.yaml.base with these env variables.
 
 ![minikube dashboard](/images/install_chaincode.png)
