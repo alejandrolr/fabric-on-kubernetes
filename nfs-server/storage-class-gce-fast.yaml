@@ -1,0 +1,13 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: fast
+provisioner: kubernetes.io/gce-pd
+parameters:
+  # type: pd-standard or pd-ssd. Default: pd-standard
+  type: pd-ssd
+  # GCE zone. If neither zone nor zones is specified, volumes are generally round-robin-ed 
+  # across all active zones where Kubernetes cluster has a node. zone and zones parameters 
+  # must not be used at the same time.
+#  zones: us-central1-a, us-central1-b
+  

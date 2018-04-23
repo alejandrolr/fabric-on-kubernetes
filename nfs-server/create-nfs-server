@@ -1,0 +1,8 @@
+kubectl create -f storage-class-gce-slow.yaml
+kubectl create -f storage-class-gce-fast.yaml
+kubectl create -f nfs-server-pvc.yaml
+kubectl create -f nfs-server-rc.yaml
+kubectl create -f nfs-server-service.yaml
+
+# You will need the ClusterIP of the nfs-server service
+kubectl describe services nfs-server
