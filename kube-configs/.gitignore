@@ -3,3 +3,7 @@ join_channel.yaml
 chaincode_install.yaml
 chaincode_instantiate.yaml
 composer-rest-server.yaml
+create_channel_gcloud.yaml
+join_channel_gcloud.yaml
+chaincode_install_gcloud.yaml
+chaincode_instantiate_gcloud.yaml
