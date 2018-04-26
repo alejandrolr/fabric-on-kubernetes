@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 if [ "${PWD##*/}" == "create" ]; then
     KUBECONFIG_FOLDER=${PWD}/../../kube-configs
 elif [ "${PWD##*/}" == "scripts" ]; then
@@ -24,6 +26,13 @@ Parse_Arguments() {
 
 Parse_Arguments $@
 
+if [[ "`kubectl describe svc nfs-server | grep IP: | awk '{print $2}'`" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+    NFS_CLUSTER_IP=`kubectl describe svc nfs-server | grep IP: | awk '{print $2}'`
+else
+    echo "nfs-server is not running or have a wrong IP"
+    exit 1
+fi
+
 echo "Creating Services for blockchain network"
 if [ "${WITH_COUCHDB}" == "true" ]; then
     # Use the yaml file with couchdb
@@ -33,6 +42,9 @@ else
     echo "Running: kubectl create -f ${KUBECONFIG_FOLDER}/blockchain-services.yaml"
     kubectl create -f ${KUBECONFIG_FOLDER}/blockchain-services.yaml
 fi
+
+echo "Preparing yaml for deployments"
+sed -e "s/%NFS_CLUSTER_IP%/${NFS_CLUSTER_IP}/g" ${KUBECONFIG_FOLDER}/blockchain-gcloud.yaml.base > ${KUBECONFIG_FOLDER}/blockchain-gcloud.yaml
 
 
 echo "Creating new Deployment"

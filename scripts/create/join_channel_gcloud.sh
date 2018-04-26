@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 if [ "${PWD##*/}" == "create" ]; then
     KUBECONFIG_FOLDER=${PWD}/../../kube-configs
 elif [ "${PWD##*/}" == "scripts" ]; then
@@ -40,12 +42,19 @@ if [ -z "${MSP_CONFIGPATH}" ]; then
 fi
 MSP_CONFIGPATH=${MSP_CONFIGPATH:-/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp}
 
+if [[ "`kubectl describe svc nfs-server | grep IP: | awk '{print $2}'`" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+    NFS_CLUSTER_IP=`kubectl describe svc nfs-server | grep IP: | awk '{print $2}'`
+else
+    echo "nfs-server is not running or have a wrong IP"
+    exit 1
+fi
+
 echo "Deleting old channel pods if exists"
 echo "Running: ${KUBECONFIG_FOLDER}/../scripts/delete/delete_channel-pods.sh"
 ${KUBECONFIG_FOLDER}/../scripts/delete/delete_channel-pods.sh
 
 echo "Preparing yaml for joinchannel pod"
-sed -e "s/%PEER_ADDRESS%/${PEER_ADDRESS}/g" -e "s/%CHANNEL_NAME%/${CHANNEL_NAME}/g" -e "s/%PEER_MSPID%/${PEER_MSPID}/g" -e "s|%MSP_CONFIGPATH%|${MSP_CONFIGPATH}|g" ${KUBECONFIG_FOLDER}/join_channel_gcloud.yaml.base > ${KUBECONFIG_FOLDER}/join_channel_gcloud.yaml
+sed -e "s/%NFS_CLUSTER_IP%/${NFS_CLUSTER_IP}/g" -e "s/%PEER_ADDRESS%/${PEER_ADDRESS}/g" -e "s/%CHANNEL_NAME%/${CHANNEL_NAME}/g" -e "s/%PEER_MSPID%/${PEER_MSPID}/g" -e "s|%MSP_CONFIGPATH%|${MSP_CONFIGPATH}|g" ${KUBECONFIG_FOLDER}/join_channel_gcloud.yaml.base > ${KUBECONFIG_FOLDER}/join_channel_gcloud.yaml
 
 echo "Creating joinchannel pod"
 echo "Running: kubectl create -f ${KUBECONFIG_FOLDER}/join_channel_gcloud.yaml"

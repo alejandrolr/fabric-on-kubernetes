@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 if [ "${PWD##*/}" == "create" ]; then
     KUBECONFIG_FOLDER=${PWD}/../../kube-configs
 elif [ "${PWD##*/}" == "scripts" ]; then
@@ -57,12 +59,19 @@ if [ -z ${CHAINCODE_VERSION} ]; then
 fi
 CHAINCODE_VERSION=${CHAINCODE_VERSION:-1.0}
 
+if [[ "`kubectl describe svc nfs-server | grep IP: | awk '{print $2}'`" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+    NFS_CLUSTER_IP=`kubectl describe svc nfs-server | grep IP: | awk '{print $2}'`
+else
+    echo "nfs-server is not running or have a wrong IP"
+    exit 1
+fi
+
 echo "Deleting old chaincodeinstantiate pods if exists"
 echo "Running: ${KUBECONFIG_FOLDER}/../scripts/delete/delete_chaincode-instantiate.sh"
 ${KUBECONFIG_FOLDER}/../scripts/delete/delete_chaincode-instantiate.sh
 
 echo "Preparing yaml for chaincodeinstantiate"
-sed -e "s/%CHANNEL_NAME%/${CHANNEL_NAME}/g" -e "s/%PEER_ADDRESS%/${PEER_ADDRESS}/g" -e "s/%PEER_MSPID%/${PEER_MSPID}/g" -e "s|%MSP_CONFIGPATH%|${MSP_CONFIGPATH}|g"  -e "s/%CHAINCODE_NAME%/${CHAINCODE_NAME}/g" -e "s/%CHAINCODE_VERSION%/${CHAINCODE_VERSION}/g" ${KUBECONFIG_FOLDER}/chaincode_instantiate_gcloud.yaml.base > ${KUBECONFIG_FOLDER}/chaincode_instantiate_gcloud.yaml
+sed -e "s/%NFS_CLUSTER_IP%/${NFS_CLUSTER_IP}/g" -e "s/%CHANNEL_NAME%/${CHANNEL_NAME}/g" -e "s/%PEER_ADDRESS%/${PEER_ADDRESS}/g" -e "s/%PEER_MSPID%/${PEER_MSPID}/g" -e "s|%MSP_CONFIGPATH%|${MSP_CONFIGPATH}|g"  -e "s/%CHAINCODE_NAME%/${CHAINCODE_NAME}/g" -e "s/%CHAINCODE_VERSION%/${CHAINCODE_VERSION}/g" ${KUBECONFIG_FOLDER}/chaincode_instantiate_gcloud.yaml.base > ${KUBECONFIG_FOLDER}/chaincode_instantiate_gcloud.yaml
 
 echo "Creating chaincodeinstantiate pod"
 echo "Running: kubectl create -f ${KUBECONFIG_FOLDER}/chaincode_instantiate_gcloud.yaml"
