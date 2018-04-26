@@ -15,13 +15,13 @@ After creating your cluster, you need to get authentication credentials to inter
 
 ### 1. Create storage
 
-The first thing is to create a shared-storage. To do so, we will create a NFS server which will allocate all the needed config files and generated certificates during the process.
+The first thing is to create a shared-storage. To do so, we will create a NFS server which will allocate all the needed config files and generated certificates during the process. Go to nfs-server folder ``cd nfs-server`` and execute:
 
-```./nfs-server/create-nfs-server```
+```./create-nfs-server```
 
 > Internally, it will create a StorageClass (pd-ssd), a PersistentVolumeClaim, a ReplicationController and a Service (nfs-server). More information [here](nfs-server/README.md).
 
-![minikube dashboard](/images/create_storage.png)
+![nfs-server](/images/gcloud/nfs-server-service.png)
 
 ### 2. Create Blockchain
 
@@ -34,12 +34,12 @@ Or ```./create/create_blockchain_gcloud.sh --with-couchdb``` if couchdb is desir
 > 2.1. Internally, it will execute ``kubectl create -f ${KUBECONFIG_FOLDER}/blockchain-services.yaml`` and create four services called: blockchain-ca, blockchain-orderer, blockchain-org1peer1 and blockchain-org2peer1.  
 With couchdb, it will execute ``kubectl create -f ${KUBECONFIG_FOLDER}/blockchain-couchdb-services.yaml`` and create the same services as before but including two more: blockchain-couchdb1 and blockchain-couchdb2.
 
-![minikube dashboard](/images/create_blockchain_2.png)
+![blockchain](/images/gcloud/blockchain-services.png)
 
 > 2.2. It will also execute ``kubectl create -f ${KUBECONFIG_FOLDER}/blockchain_gcloud.yaml`` and create four Deployments (And its corresponding pods), one for each previous services and, finally, one utils pod, to generate certs and channel-artifacts and copy them to the shared nfs server.
 With couchdb, it will execute ``kubectl create -f ${KUBECONFIG_FOLDER}/blockchain_gcloud.yaml``and create the same Deployments but configured to use couchdb.
 
-![minikube dashboard](/images/create_blockchain_1.png)
+![blockchain](/images/gcloud/blockchain-deployments.png)
 
 > 2.3. Finally, It will wait for the correct creation of all the previous items.
 
@@ -54,7 +54,7 @@ After creating the blockchain components, one channel (at least) is needed. To c
 > 3.2. Now, it will create the channel. Notice that the environment variables `PEER_MSPID="Org1MSP"` and `CHANNEL_NAME="channel1"` are required to select the peer who will create the channel and the channel name.  
 The execution will launch the order `kubectl create -f ${KUBECONFIG_FOLDER}/create_channel_gcloud.yaml`, where create_channel_gcloud.yaml is a modification of kube_configs/create_channel_gcloud.yaml.base with these env variables.
 
-![minikube dashboard](/images/create_channel.png)
+![create_channel](/images/gcloud/create_channel.png)
 
 ### 4. Join peers to the channel
 
@@ -69,7 +69,7 @@ After creating the channel, the desired peers that will form the network need to
 > 3.2. Now, it will join the peers to the channel. Notice that the environment variables `PEER_MSPID="Org1MSP"`, `CHANNEL_NAME="channel1"`, `PEER_ADDRESS="blockchain-org2peer1:30210"` and `MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp"` are required to select the peer who will join the channel.  
 The execution will launch the order `kubectl create -f ${KUBECONFIG_FOLDER}/join_channel_gcloud.yaml`, where join_channel_gcloud.yaml is a modification of kube_config/join_channel_gcloud.yaml.base with these env variables.
 
-![minikube dashboard](/images/join_channel.png)
+![join_channel](/images/gcloud/join_channel.png)
 
 ### 5. Install chaincode on desired peers
 
@@ -84,7 +84,7 @@ All the peers on the channel must have installed the chaincode, so execute this 
 > 3.2. Now, it will install the desired chaincode on all the peers. Notice that the environment variables `CHAINCODE_NAME="example02"`, ` CHAINCODE_VERSION="v1"`, `PEER_MSPID="Org1MSP"`, `CHANNEL_NAME="channel1"`, `PEER_ADDRESS="blockchain-org1peer1:30110"` and `MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp"` are required to select the desired peer and chaincode.   
 The execution will launch the order `kubectl create -f ${KUBECONFIG_FOLDER}/chaincode_install_gcloud.yaml`, where chaincode_install_gcloud.yaml is a modification of kube_config/chaincode_install_gcloud.yaml.base with these env variables.
 
-![minikube dashboard](/images/install_chaincode.png)
+![chaincode_install](/images/gcloud/chaincode_install.png)
 
 ### 6. Instantiate chaincode
 
@@ -96,7 +96,7 @@ Finally, the last step is to instantiate the chaincode on one peer. To do so exe
 
 > 3.2. Now, it will install the desired chaincode on all the peers. Notice that the environment variables `CHAINCODE_NAME="example02"`, ` CHAINCODE_VERSION="v1"`, `PEER_MSPID="Org1MSP"`, `CHANNEL_NAME="channel1"`, `PEER_ADDRESS="blockchain-org1peer1:30110"` and `MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp"` are required to select the desired peer and chaincode to instantiate.
 
-![minikube dashboard](/images/instantiate_chaincode.png)
+![chaincode_instantiate](/images/gcloud/chaincode_instantiate.png)
 
 ### 7. Test application
 
@@ -104,22 +104,22 @@ Once deployed and configured the blockchain, the next step it test the applicati
 
 1. connect to one peer, to do so execute `kubectl get pods`. Imagine that you want to be connected to the org1peer1:
 
-![minikube dashboard](/images/pods.png)
+![pods](/images/gcloud/pods.png)
 
-2. Execute `kubectl exec -it blockchain-org1peer1-64b578c597-wz4j9 bash`.
+2. Execute `kubectl exec -it blockchain-org1peer1-68f4c697c8-2w2s6 bash`.
 
 3. Test the application:
 
 `peer chaincode query -C channel1 -n example02 -c '{"Args":["query","a"]}'`
 
-![minikube dashboard](/images/query1.png)
+![query1](/images/query1.png)
 
 `peer chaincode invoke -C channel1 -n example02 -c '{"Args":["invoke","a","b","40"]}'`
 
-![minikube dashboard](/images/invoke1.png)
-![minikube dashboard](/images/invoke2.png)
+![invoke1](/images/invoke1.png)
+![invoke2](/images/invoke2.png)
 
 `peer chaincode query -C channel1 -n example02 -c '{"Args":["query","a"]}'`
 
-![minikube dashboard](/images/query2.png)
+![query2](/images/query2.png)
 
