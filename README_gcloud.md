@@ -36,7 +36,7 @@ With couchdb, it will execute ``kubectl create -f ${KUBECONFIG_FOLDER}/blockchai
 
 ![blockchain](/images/gcloud/blockchain-services.png)
 
-> 2.2. It will also execute ``kubectl create -f ${KUBECONFIG_FOLDER}/blockchain_gcloud.yaml`` and create four Deployments (And its corresponding pods), one for each previous services and, finally, one utils pod, to generate certs and channel-artifacts and copy them to the shared nfs server.
+> 2.2. It will also execute ``kubectl create -f ${KUBECONFIG_FOLDER}/blockchain_gcloud.yaml`` and create four Deployments (And its corresponding pods), one for each previous services and, finally, one utils pod, to generate certs and channel-artifacts and copy them to the shared nfs server.  
 With couchdb, it will execute ``kubectl create -f ${KUBECONFIG_FOLDER}/blockchain_gcloud.yaml``and create the same Deployments but configured to use couchdb.
 
 ![blockchain](/images/gcloud/blockchain-deployments.png)
@@ -64,9 +64,9 @@ After creating the channel, the desired peers that will form the network need to
 
 ```CHANNEL_NAME="channel1" PEER_MSPID="Org2MSP" PEER_ADDRESS="blockchain-org2peer1:30210" MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp" create/join_channel_gcloud.sh```
 
-> 3.1. Internally, it will find if there is a previous join channel pod created. If it exists it will be deleted using the script `delete/delete_channel-pods.sh`.
+> 4.1. Internally, it will find if there is a previous join channel pod created. If it exists it will be deleted using the script `delete/delete_channel-pods.sh`.
 
-> 3.2. Now, it will join the peers to the channel. Notice that the environment variables `PEER_MSPID="Org1MSP"`, `CHANNEL_NAME="channel1"`, `PEER_ADDRESS="blockchain-org2peer1:30210"` and `MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp"` are required to select the peer who will join the channel.  
+> 4.2. Now, it will join the peers to the channel. Notice that the environment variables `PEER_MSPID="Org1MSP"`, `CHANNEL_NAME="channel1"`, `PEER_ADDRESS="blockchain-org2peer1:30210"` and `MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp"` are required to select the peer who will join the channel.  
 The execution will launch the order `kubectl create -f ${KUBECONFIG_FOLDER}/join_channel_gcloud.yaml`, where join_channel_gcloud.yaml is a modification of kube_config/join_channel_gcloud.yaml.base with these env variables.
 
 ![join_channel](/images/gcloud/join_channel.png)
@@ -79,9 +79,9 @@ All the peers on the channel must have installed the chaincode, so execute this 
 
 ```CHAINCODE_NAME="example02" CHAINCODE_VERSION="v1" MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp"  PEER_MSPID="Org2MSP" PEER_ADDRESS="blockchain-org2peer1:30210" create/chaincode_install_gcloud.sh```
 
-> 3.1. Internally, it will find if there is a previous install chaincode pod created. If it exists it will be deleted using the script `delete/delete_chaincode-install.sh`.
+> 5.1. Internally, it will find if there is a previous install chaincode pod created. If it exists it will be deleted using the script `delete/delete_chaincode-install.sh`.
 
-> 3.2. Now, it will install the desired chaincode on all the peers. Notice that the environment variables `CHAINCODE_NAME="example02"`, ` CHAINCODE_VERSION="v1"`, `PEER_MSPID="Org1MSP"`, `CHANNEL_NAME="channel1"`, `PEER_ADDRESS="blockchain-org1peer1:30110"` and `MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp"` are required to select the desired peer and chaincode.   
+> 5.2. Now, it will install the desired chaincode on all the peers. Notice that the environment variables `CHAINCODE_NAME="example02"`, ` CHAINCODE_VERSION="v1"`, `PEER_MSPID="Org1MSP"`, `CHANNEL_NAME="channel1"`, `PEER_ADDRESS="blockchain-org1peer1:30110"` and `MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp"` are required to select the desired peer and chaincode.   
 The execution will launch the order `kubectl create -f ${KUBECONFIG_FOLDER}/chaincode_install_gcloud.yaml`, where chaincode_install_gcloud.yaml is a modification of kube_config/chaincode_install_gcloud.yaml.base with these env variables.
 
 ![chaincode_install](/images/gcloud/chaincode_install.png)
@@ -92,9 +92,9 @@ Finally, the last step is to instantiate the chaincode on one peer. To do so exe
 
 ```CHANNEL_NAME="channel1" CHAINCODE_NAME="example02" CHAINCODE_VERSION="v1" MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp"  PEER_MSPID="Org1MSP" PEER_ADDRESS="blockchain-org1peer1:30110" create/chaincode_instantiate_gcloud.sh```
 
-> 3.1. Internally, it will find if there is a previous install chaincode pod created. If it exists it will be deleted using the script `delete/delete_chaincode-instantiate.sh`.
+> 6.1. Internally, it will find if there is a previous install chaincode pod created. If it exists it will be deleted using the script `delete/delete_chaincode-instantiate.sh`.
 
-> 3.2. Now, it will install the desired chaincode on all the peers. Notice that the environment variables `CHAINCODE_NAME="example02"`, ` CHAINCODE_VERSION="v1"`, `PEER_MSPID="Org1MSP"`, `CHANNEL_NAME="channel1"`, `PEER_ADDRESS="blockchain-org1peer1:30110"` and `MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp"` are required to select the desired peer and chaincode to instantiate.
+> 6.2. Now, it will install the desired chaincode on all the peers. Notice that the environment variables `CHAINCODE_NAME="example02"`, ` CHAINCODE_VERSION="v1"`, `PEER_MSPID="Org1MSP"`, `CHANNEL_NAME="channel1"`, `PEER_ADDRESS="blockchain-org1peer1:30110"` and `MSP_CONFIGPATH="/shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp"` are required to select the desired peer and chaincode to instantiate.
 
 ![chaincode_instantiate](/images/gcloud/chaincode_instantiate.png)
 
