@@ -38,3 +38,7 @@ echo "=> DELETE_ALL: Wiping the shared folder empty"
 echo ""
 echo "=> DELETE_ALL: Deleting persistent volume - call."
 ./delete/delete_storage.sh $@
+
+echo ""
+echo "=> DELETE_ALL: Deleting persistent volume - call."
+./delete/delete_nfs.sh $@

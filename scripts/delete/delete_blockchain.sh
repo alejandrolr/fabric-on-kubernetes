@@ -10,7 +10,6 @@ else
 fi
 
 WITH_COUCHDB=false
-PAID=false
 
 Parse_Arguments() {
 	while [ $# -gt 0 ]; do
@@ -19,10 +18,6 @@ Parse_Arguments() {
 				echo "Configured to setup network with couchdb"
 				WITH_COUCHDB=true
 				;;
-			--paid)
-				echo "Configured to setup a paid storage on ibm-cs"
-				PAID=true
-				;;
 		esac
 		shift
 	done
@@ -30,20 +25,14 @@ Parse_Arguments() {
 
 Parse_Arguments $@
 
-if [ "${PAID}" == "true" ]; then
-	OFFERING="paid"
-else
-	OFFERING="free"
-fi
-
 echo "Deleting blockchain services"
 if [ "$(kubectl get svc | grep couchdb | wc -l | awk '{print $1}')" != "0" ]; then
     # Use the yaml file with couchdb
-    echo "Running: kubectl delete -f ${KUBECONFIG_FOLDER}/blockchain-couchdb-services-${OFFERING}.yaml"
-    kubectl delete -f ${KUBECONFIG_FOLDER}/blockchain-couchdb-services-${OFFERING}.yaml
+    echo "Running: kubectl delete -f ${KUBECONFIG_FOLDER}/blockchain-couchdb-services.yaml"
+    kubectl delete -f ${KUBECONFIG_FOLDER}/blockchain-couchdb-services.yaml
 else
-    echo "Running: kubectl delete -f ${KUBECONFIG_FOLDER}/blockchain-services-${OFFERING}.yaml"
-    kubectl delete -f ${KUBECONFIG_FOLDER}/blockchain-services-${OFFERING}.yaml
+    echo "Running: kubectl delete -f ${KUBECONFIG_FOLDER}/blockchain-services.yaml"
+    kubectl delete -f ${KUBECONFIG_FOLDER}/blockchain-services.yaml
 fi
 
 echo "Deleting blockchain deployments"

@@ -7,3 +7,4 @@ create_channel_gcloud.yaml
 join_channel_gcloud.yaml
 chaincode_install_gcloud.yaml
 chaincode_instantiate_gcloud.yaml
+blockchain-gcloud.yaml
