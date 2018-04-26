@@ -11,7 +11,7 @@ spec:
 #      claimName: shared-pvc
   - name: nfs
     nfs:
-      server: 10.11.247.89
+      server: %NFS_CLUSTER_IP%
       path: /
   containers:
   - name: createchanneltx
