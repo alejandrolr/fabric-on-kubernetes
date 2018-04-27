@@ -17,7 +17,7 @@ After creating your cluster, you need to get authentication credentials to inter
 
 The first thing is to create a shared-storage. To do so, we will create a NFS server which will allocate all the needed config files and generated certificates during the process. Go to nfs-server folder ``cd nfs-server`` and execute:
 
-```./create-nfs-server```
+```./create-nfs-server $PWD```
 
 > Internally, it will create a StorageClass (pd-ssd), a PersistentVolumeClaim, a ReplicationController and a Service (nfs-server). More information [here](nfs-server/README.md).
 
