@@ -3,6 +3,10 @@ How to implement Hyperledger Fabric on Kubernetes
 
 This code implements Hyperledger Fabric using Kubernetes: the container orchestration tool.
 
+The desired topology (separating network components):
+
+<img src="/images/Architecture.png"/>
+
 ### Implementations
 
 There are two possible implementations: 
