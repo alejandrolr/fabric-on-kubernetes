@@ -14,6 +14,9 @@ echo "=> CREATE_ALL: Creating nfs storage $KUBECONFIG_FOLDER"
 echo ""
 echo "=> CREATE_ALL: Creating blockchain"
 create/create_blockchain_gcloud.sh $@
+echo ""
+echo "=> CREATE_ALL: Creating API"
+create/create_api.sh
 
 echo ""
 echo "=> CREATE_ALL: Running Create Channel"

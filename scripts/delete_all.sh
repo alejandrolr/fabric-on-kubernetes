@@ -36,6 +36,10 @@ echo "=> DELETE_ALL: Wiping the shared folder empty"
 ./wipe_shared.sh
 
 echo ""
+echo "=> DELETE_ALL: Deleting API"
+./delete/delete_api.sh
+
+echo ""
 echo "=> DELETE_ALL: Deleting persistent volume - call."
 ./delete/delete_storage.sh $@
 
