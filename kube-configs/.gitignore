@@ -8,3 +8,4 @@ join_channel_gcloud.yaml
 chaincode_install_gcloud.yaml
 chaincode_instantiate_gcloud.yaml
 blockchain-gcloud.yaml
+kubernetes-api-gcloud.yaml
