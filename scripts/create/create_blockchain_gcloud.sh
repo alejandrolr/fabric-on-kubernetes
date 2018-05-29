@@ -3,28 +3,12 @@
 set -e
 
 if [ "${PWD##*/}" == "create" ]; then
-    KUBECONFIG_FOLDER=${PWD}/../../kube-configs
+    KUBECONFIG_FOLDER=${PWD}/../configFiles
 elif [ "${PWD##*/}" == "scripts" ]; then
-    KUBECONFIG_FOLDER=${PWD}/../kube-configs
+    KUBECONFIG_FOLDER=${PWD}/configFiles
 else
     echo "Please run the script from 'scripts' or 'scripts/create' folder"
 fi
-
-WITH_COUCHDB=false
-
-Parse_Arguments() {
-	while [ $# -gt 0 ]; do
-		case $1 in
-			--with-couchdb)
-				echo "Configured to setup network with couchdb"
-				WITH_COUCHDB=true
-				;;
-		esac
-		shift
-	done
-}
-
-Parse_Arguments $@
 
 if [[ "`kubectl describe svc nfs-server | grep IP: | awk '{print $2}'`" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
     NFS_CLUSTER_IP=`kubectl describe svc nfs-server | grep IP: | awk '{print $2}'`
@@ -33,29 +17,18 @@ else
     exit 1
 fi
 
-echo "Creating Services for blockchain network"
-if [ "${WITH_COUCHDB}" == "true" ]; then
-    # Use the yaml file with couchdb
-    echo "Running: kubectl create -f ${KUBECONFIG_FOLDER}/blockchain-couchdb-services.yaml"
-    kubectl create -f ${KUBECONFIG_FOLDER}/blockchain-couchdb-services.yaml
-else
-    echo "Running: kubectl create -f ${KUBECONFIG_FOLDER}/blockchain-services.yaml"
-    kubectl create -f ${KUBECONFIG_FOLDER}/blockchain-services.yaml
-fi
+# Create services for all peers, ca, orderer
+echo -e "\nCreating Services for blockchain network"
+echo "Running: kubectl create -f ${KUBECONFIG_FOLDER}/blockchain-services.yaml"
+kubectl create -f ${KUBECONFIG_FOLDER}/blockchain-services.yaml
 
 echo "Preparing yaml for deployments"
-sed -e "s/%NFS_CLUSTER_IP%/${NFS_CLUSTER_IP}/g" ${KUBECONFIG_FOLDER}/blockchain-gcloud.yaml.base > ${KUBECONFIG_FOLDER}/blockchain-gcloud.yaml
+sed -e "s/%NFS_CLUSTER_IP%/${NFS_CLUSTER_IP}/g" ${KUBECONFIG_FOLDER}/peersDeployment.yaml.base > ${KUBECONFIG_FOLDER}/peersDeployment.yaml
 
-
-echo "Creating new Deployment"
-if [ "${WITH_COUCHDB}" == "true" ]; then
-    # Use the yaml file with couchdb
-    echo "Running: kubectl create -f ${KUBECONFIG_FOLDER}/blockchain-couchdb.yaml"
-    kubectl create -f ${KUBECONFIG_FOLDER}/blockchain-couchdb.yaml
-else
-    echo "Running: kubectl create -f ${KUBECONFIG_FOLDER}/blockchain.yaml"
-    kubectl create -f ${KUBECONFIG_FOLDER}/blockchain-gcloud.yaml
-fi
+# Create peers, ca, orderer using Kubernetes Deployments
+echo -e "\nCreating new Deployment to create four peers in network"
+echo "Running: kubectl create -f ${KUBECONFIG_FOLDER}/peersDeployment.yaml"
+kubectl create -f ${KUBECONFIG_FOLDER}/peersDeployment.yaml
 
 echo "Checking if all deployments are ready"
 
@@ -64,30 +37,6 @@ while [ "${NUMPENDING}" != "0" ]; do
     echo "Waiting on pending deployments. Deployments pending = ${NUMPENDING}"
     NUMPENDING=$(kubectl get deployments | grep blockchain | awk '{print $5}' | grep 0 | wc -l | awk '{print $1}')
     sleep 1
-done
-
-UTILSSTATUS=$(kubectl get pods -a utils | grep utils | awk '{print $3}')
-while [ "${UTILSSTATUS}" != "Completed" ]; do
-    echo "Waiting for Utils pod to start completion. Status = ${UTILSSTATUS}"
-    if [ "${UTILSSTATUS}" == "Error" ]; then
-        echo "There is an error in utils pod. Please run 'kubectl logs utils' or 'kubectl describe pod utils'."
-        exit 1
-    fi
-    UTILSSTATUS=$(kubectl get pods -a utils | grep utils | awk '{print $3}')
-done
-
-
-UTILSCOUNT=$(kubectl get pods -a utils | grep "0/3" | grep "Completed" | wc -l | awk '{print $1}')
-while [ "${UTILSCOUNT}" != "1" ]; do
-    UTILSLEFT=$(kubectl get pods -a utils | grep utils | awk '{print $2}')
-    echo "Waiting for all containers in Utils pod to complete. Left = ${UTILSLEFT}"
-    UTILSSTATUS=$(kubectl get pods -a utils | grep utils | awk '{print $3}')
-    if [ "${UTILSSTATUS}" == "Error" ]; then
-        echo "There is an error in utils pod. Please run 'kubectl logs utils' or 'kubectl describe pod utils'."
-        exit 1
-    fi
-    sleep 1
-    UTILSCOUNT=$(kubectl get pods -a utils | grep "0/3" | grep "Completed" | wc -l | awk '{print $1}')
 done
 
 echo "Waiting for 15 seconds for peers and orderer to settle"

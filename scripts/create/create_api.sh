@@ -36,3 +36,4 @@ while [ "${NUMPENDING}" != "0" ]; do
     NUMPENDING=$(kubectl get deployments | grep kubernetes-api | awk '{print $5}' | grep 0 | wc -l | awk '{print $1}')
     sleep 1
 done
+echo "API Completed Successfully"
