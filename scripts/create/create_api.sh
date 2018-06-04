@@ -3,9 +3,9 @@
 set -e
 
 if [ "${PWD##*/}" == "create" ]; then
-    KUBECONFIG_FOLDER=${PWD}/../../kube-configs
+    KUBECONFIG_FOLDER=${PWD}/../configFiles
 elif [ "${PWD##*/}" == "scripts" ]; then
-    KUBECONFIG_FOLDER=${PWD}/../kube-configs
+    KUBECONFIG_FOLDER=${PWD}/configFiles
 else
     echo "Please run the script from 'scripts' or 'scripts/create' folder"
 fi

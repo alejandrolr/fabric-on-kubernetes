@@ -30,6 +30,7 @@ create/create_api.sh
 
 echo ""
 echo "=> CREATE_ALL: Running Create Channel"
+
 create/create_channel_gcloud.sh
 
 echo ""
@@ -52,3 +53,6 @@ create/chaincode_install_gcloud.sh
 echo ""
 echo "=> CREATE_ALL: Running instantiate chaincode on channel \"channel1\" using \"Org1MSP\""
 create/chaincode_instantiate_gcloud.sh
+
+sleep 15
+echo -e "\nNetwork Setup Completed !!"

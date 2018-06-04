@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubernetes-api
+  labels:
+    run: kubernetes-api
+spec:
+  type: NodePort
+  selector:
+    name: kubernetes-api
+  ports:
+  - protocol: TCP
+    nodePort: 30400
+    targetPort: 4000
+    port: 4000
+    name: api

@@ -1,0 +1,8 @@
+chaincode_install.yaml
+chaincode_instantiate.yaml
+copyArtifactsJob.yaml
+create_channel.yaml
+generateArtifactsJob.yaml
+join_channel.yaml
+kubernetes-api-gcloud.yaml
+peersDeployment.yaml

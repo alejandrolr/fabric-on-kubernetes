@@ -243,5 +243,3 @@ cacount:
 cafiles:
   - /shared/cas/org1/ca.yaml
   - /shared/cas/org2/ca.yaml
-  - /shared/cas/org3/ca.yaml
-  - /shared/cas/org4/ca.yaml

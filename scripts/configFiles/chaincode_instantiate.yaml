@@ -13,7 +13,7 @@ spec:
       volumes:
       - name: nfs
         nfs:
-          server: 10.11.247.139
+          server: 10.11.249.48
           path: /
 
       containers:
