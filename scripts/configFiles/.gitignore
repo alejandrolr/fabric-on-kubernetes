@@ -6,3 +6,4 @@ generateArtifactsJob.yaml
 join_channel.yaml
 kubernetes-api-gcloud.yaml
 peersDeployment.yaml
+kubernetes-front-gcloud.yaml

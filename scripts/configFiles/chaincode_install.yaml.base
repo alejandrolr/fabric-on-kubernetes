@@ -19,10 +19,10 @@ spec:
       - name: chaincodeinstall1
         image: hyperledger/fabric-tools:x86_64-1.0.4
         imagePullPolicy: Always
-        command: ["sh", "-c", "echo $GOPATH; cp -r /shared/artifacts/chaincode $GOPATH/src/; ls $GOPATH/src; peer chaincode install -n ${CHAINCODE_NAME} -v ${CHAINCODE_VERSION} -p chaincode_example02/"]
+        command: ["sh", "-c", "echo $GOPATH; cp -r /shared/artifacts/chaincode $GOPATH/src/; ls $GOPATH/src; peer chaincode install -n ${CHAINCODE_NAME} -v ${CHAINCODE_VERSION} -p arm/"]
         env:
         - name: CHAINCODE_NAME
-          value: "cc"
+          value: "arm"
         - name: CHAINCODE_VERSION
           value: "1.0"
         - name: FABRIC_CFG_PATH

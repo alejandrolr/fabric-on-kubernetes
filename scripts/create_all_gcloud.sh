@@ -37,15 +37,6 @@ echo ""
 echo "=> CREATE_ALL: Running Join Channel on peers"
 create/join_channel_gcloud.sh
 
-# echo ""
-# echo "=> CREATE_ALL: Creating composer playground"
-# create/create_composer-playground.sh $@
-
-# Can't create this until the user has performed manual actions in the Composer Playground.
-# echo ""
-# echo "=> CREATE_ALL: Creating composer rest server"
-# create/create_composer-rest-server.sh $@
-
 echo ""
 echo "=> CREATE_ALL: Running Install Chaincode on peers"
 create/chaincode_install_gcloud.sh
@@ -53,6 +44,10 @@ create/chaincode_install_gcloud.sh
 echo ""
 echo "=> CREATE_ALL: Running instantiate chaincode on channel \"channel1\" using \"Org1MSP\""
 create/chaincode_instantiate_gcloud.sh
+
+echo ""
+echo "=> CREATE_ALL: Creating front APP Laboratories"
+create/create_front.sh
 
 sleep 15
 echo -e "\nNetwork Setup Completed !!"

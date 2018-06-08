@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubernetes-front
+  labels:
+    run: kubernetes-front
+spec:
+  type: NodePort
+  selector:
+    name: kubernetes-front
+  ports:
+  - protocol: TCP
+    nodePort: 30800
+    targetPort: 8000
+    port: 8000
+    name: front
