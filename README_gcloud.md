@@ -42,3 +42,5 @@ Go to ``http://PUBLIC_IP:30800`` in a web browser to access the application.
 To delete this topology execute:
 
 ```./delete_all_gcloud.sh```
+
+NOTE: include the flag ```-i``` in order to delete the nfs server
