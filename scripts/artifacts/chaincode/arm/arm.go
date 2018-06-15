@@ -19,6 +19,7 @@ type MarketingAuthorization struct {
 	CreatedDate    string `json:"createdDate"`
 	AuthDate       string `json:"authDate"`
 	Price          string `json:"price"`
+	Status         string `json:"status"`
 }
 
 type Laboratory struct {
@@ -43,9 +44,6 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 	function, args := APIstub.GetFunctionAndParameters()
 
 	// Route to the appropriate handler function to interact with the ledger appropriately
-	/*if function == "createLaboratory" {
-		return s.createLaboratory(APIstub, args)
-	} else */
 	if function == "addARM" {
 		return s.addARM(APIstub, args)
 	} else if function == "addLaboratory" {
@@ -54,6 +52,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.queryByMarketingAuthorization(APIstub, args)
 	} else if function == "queryLabsJSON" {
 		return s.queryLabsJSON(APIstub, args)
+	} else if function == "approveMA" {
+		return s.approveMA(APIstub, args)
 	} else if function == "createMarketingAuthorization" { // LAB function
 		return s.createMarketingAuthorization(APIstub, args)
 	}
@@ -114,16 +114,13 @@ func (s *SmartContract) createMarketingAuthorization(APIstub shim.ChaincodeStubI
 		return shim.Error("Expecting 4 {OWNER, LAB, MEDICINE, DATE}")
 	}
 
-	/*chainCodeToCall := "arm"
-	channelID := "mychannel"
-	f := "addMarketingAuthorization"*/
-
 	var permission = MarketingAuthorization{
 		LaboratoryName: args[1],
 		Medicine:       args[2],
 		CreatedDate:    args[3],
 		AuthDate:       "",
 		Price:          "",
+		Status:         "Pending",
 	}
 
 	armAsBytes, err := APIstub.GetState(args[0])
@@ -139,48 +136,7 @@ func (s *SmartContract) createMarketingAuthorization(APIstub shim.ChaincodeStubI
 	APIstub.PutState(args[0], armAsBytes)
 
 	return shim.Success(nil)
-
-	/*invokeArgs := toChaincodeArgs(f, args[0], args[1], args[2], args[3])
-	response := APIstub.InvokeChaincode(chainCodeToCall, invokeArgs, channelID)
-	if response.Status != shim.OK {
-		errStr := fmt.Sprintf("Failed to invoke armcc. Got error: %s", string(response.Payload))
-		fmt.Printf(errStr)
-		return shim.Error(errStr)
-	}
-
-	fmt.Printf("Invoke armcc successful. Got response %s", string(response.Payload))
-
-	return shim.Success(response.Payload)*/
 }
-
-/*func (s *SmartContract) addMarketingAuthorization(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
-	if len(args) != 4 {
-		return shim.Error("Incorrect number of arguments. Expecting 4")
-	}
-
-	var permission = MarketingAuthorization{
-		LaboratoryName: args[1],
-		Medicine:       args[2],
-		CreatedDate:    args[3],
-		AuthDate:       "",
-		Price:          "",
-	}
-
-	armAsBytes, err := APIstub.GetState(args[0])
-	if err != nil {
-		return shim.Error("Failed to get specified ARM")
-	}
-
-	arm := ARM{}
-	json.Unmarshal(armAsBytes, &arm)
-
-	arm.MarketingAuthorization = append(arm.MarketingAuthorization, permission)
-
-	armAsBytes, _ = json.Marshal(arm)
-	APIstub.PutState(args[0], armAsBytes)
-
-	return shim.Success(nil)
-}*/
 
 // ./executeQuey.sh '{"Args":["queryByMarketingAuthorization", "OWNER1"]}' armcc
 func (s *SmartContract) queryByMarketingAuthorization(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
@@ -201,23 +157,38 @@ func (s *SmartContract) queryByMarketingAuthorization(APIstub shim.ChaincodeStub
 	return shim.Success(armAsBytes)
 }
 
-/*
-func (s *SmartContract) createLaboratory(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (s *SmartContract) approveMA(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
-	if len(args) != 2 {
-		return shim.Error("Incorrect number of arguments. Expecting 2")
+	if len(args) != 5 {
+		return shim.Error("Expecting 4 {ARM key, LabName, medicine, auth Date, desired status}")
 	}
 
-	var lab = Laboratory{
-		LaboratoryName: args[1],
+	armAsBytes, err := APIstub.GetState(args[0])
+	if err != nil {
+		return shim.Error("Failed to get specified ARM")
+	}
+	arm := ARM{}
+	json.Unmarshal(armAsBytes, &arm)
+
+	for i := 0; i < len(arm.MarketingAuthorization); i++ {
+		if arm.MarketingAuthorization[i].LaboratoryName == args[1] {
+			if arm.MarketingAuthorization[i].Medicine == args[2] {
+				fmt.Println("---- approveMA ----")
+				fmt.Println(arm.MarketingAuthorization[i])
+				arm.MarketingAuthorization[i].AuthDate = args[3]
+				arm.MarketingAuthorization[i].Status = args[4]
+				fmt.Println("New Status:")
+				fmt.Println(arm.MarketingAuthorization[i])
+			}
+		}
 	}
 
-	assetAsBytes, _ := json.Marshal(lab)
-	APIstub.PutState(args[0], assetAsBytes)
+	// Marshal
+	armAsBytes, _ = json.Marshal(arm)
+	APIstub.PutState(args[0], armAsBytes)
 
 	return shim.Success(nil)
 }
-*/
 
 func (s *SmartContract) queryLabsJSON(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
