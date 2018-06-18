@@ -35,6 +35,17 @@ type ARM struct {
 
 func (s *SmartContract) Init(APIstub shim.ChaincodeStubInterface) sc.Response {
 	fmt.Printf("SmartContract has been instantiated \n")
+
+	fmt.Printf("Creating ARM1 by default \n")
+	var arm = ARM{
+		Owner:                  "ARM1",
+		Desc:                   "desc ARM1 by default",
+		Laboratory:             nil,
+		MarketingAuthorization: nil,
+	}
+
+	armAsBytes, _ := json.Marshal(arm)
+	APIstub.PutState(arm.Owner, armAsBytes)
 	return shim.Success(nil)
 }
 
