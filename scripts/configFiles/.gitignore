@@ -7,3 +7,5 @@ join_channel.yaml
 kubernetes-api-gcloud.yaml
 peersDeployment.yaml
 kubernetes-front-gcloud.yaml
+mysql-depl-serv.yaml
+blockchain-explorer.yaml

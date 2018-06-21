@@ -59,12 +59,12 @@ create/create_explorer.sh
 
 sleep 15
 
-front-app=`kubectl describe node $( kubectl describe pod $( kubectl get pods | grep kubernetes-front | awk '{print $1}' ) | grep Node: | awk '{print $2}' | awk -F'/' '{print $1}' ) | grep ExternalIP: | awk '{print $2}'`
-blockchain-explorer=`kubectl describe node $( kubectl describe pod $( kubectl get pods | grep blockchain-explorer | awk '{print $1}' ) | grep Node: | awk '{print $2}' | awk -F'/' '{print $1}' ) | grep ExternalIP: | awk '{print $2}'`
+front=`kubectl describe node $( kubectl describe pod $( kubectl get pods | grep kubernetes-front | awk '{print $1}' ) | grep Node: | awk '{print $2}' | awk -F'/' '{print $1}' ) | grep ExternalIP: | awk '{print $2}'`
+blockchainexplorer=`kubectl describe node $( kubectl describe pod $( kubectl get pods | grep blockchain-explorer | awk '{print $1}' ) | grep Node: | awk '{print $2}' | awk -F'/' '{print $1}' ) | grep ExternalIP: | awk '{print $2}'`
 
 echo ""
-echo "LabAPP available in http://${front-app}:30800"
+echo "LabAPP available in http://${front}:30800"
 echo ""
-echo "Blockchain explorer available in http://${blockchain-explorer}:30880"
+echo "Blockchain explorer available in http://${blockchainexplorer}:30880"
 
 echo -e "\nNetwork Setup Completed !!"
