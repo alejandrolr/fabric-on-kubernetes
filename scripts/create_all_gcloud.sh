@@ -49,5 +49,22 @@ echo ""
 echo "=> CREATE_ALL: Creating front APP Laboratories"
 create/create_front.sh
 
+echo ""
+echo "=> CREATE_ALL: Creating mysql server for blockchain explorer"
+create/create_mysql.sh
+
+echo ""
+echo "=> CREATE_ALL: Creating blockchain explorer"
+create/create_explorer.sh
+
 sleep 15
+
+front-app=`kubectl describe node $( kubectl describe pod $( kubectl get pods | grep kubernetes-front | awk '{print $1}' ) | grep Node: | awk '{print $2}' | awk -F'/' '{print $1}' ) | grep ExternalIP: | awk '{print $2}'`
+blockchain-explorer=`kubectl describe node $( kubectl describe pod $( kubectl get pods | grep blockchain-explorer | awk '{print $1}' ) | grep Node: | awk '{print $2}' | awk -F'/' '{print $1}' ) | grep ExternalIP: | awk '{print $2}'`
+
+echo ""
+echo "LabAPP available in http://${front-app}:30800"
+echo ""
+echo "Blockchain explorer available in http://${blockchain-explorer}:30880"
+
 echo -e "\nNetwork Setup Completed !!"
