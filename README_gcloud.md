@@ -11,7 +11,7 @@ Now, you have to [create a container cluster](https://cloud.google.com/sdk/gclou
 
 After creating your cluster, you need to get authentication credentials to interact with the cluster: ```gcloud container clusters get-credentials cluster-1```. Now, kubectl must be pointing to the cluster. Ensure this step with ```kubectl cluster-info```.
 
-![minikube dashboard](/images/Architecture.png)
+![Gcloud Arquitecture](/images/gcloud/Arquitecture.png)
 
 ### Create Blockchain
 
