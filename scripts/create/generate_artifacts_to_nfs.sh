@@ -28,7 +28,7 @@ kubectl create -f ${KUBECONFIG_FOLDER}/generateArtifactsJob.yaml
 JOBSTATUS=$(kubectl get jobs |grep utils|awk '{print $3}')
 while [ "${JOBSTATUS}" != "1" ]; do
     echo "Waiting for generateArtifacts job to complete"
-    sleep 1;
+    sleep 5;
     # UTILSLEFT=$(kubectl get pods --show-all | grep utils | awk '{print $2}')
     UTILSSTATUS=$(kubectl get pods --show-all | grep "utils" | awk '{print $3}')
     if [ "${UTILSSTATUS}" == "Error" ]; then

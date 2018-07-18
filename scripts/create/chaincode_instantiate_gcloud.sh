@@ -28,7 +28,7 @@ kubectl create -f ${KUBECONFIG_FOLDER}/chaincode_instantiate.yaml
 JOBSTATUS=$(kubectl get jobs |grep chaincodeinstantiate |awk '{print $3}')
 while [ "${JOBSTATUS}" != "1" ]; do
     echo "Waiting for chaincodeinstantiate job to be completed"
-    sleep 1;
+    sleep 5;
     if [ "$(kubectl get pods --show-all| grep chaincodeinstantiate | awk '{print $3}')" == "Error" ]; then
         echo "Chaincode Instantiation Failed"
         exit 1

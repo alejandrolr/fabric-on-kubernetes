@@ -34,6 +34,6 @@ NUMPENDING=$(kubectl get deployments | grep blockchain-explorer | awk '{print $5
 while [ "${NUMPENDING}" != "0" ]; do
     echo "Waiting on pending deployments. Deployments pending = ${NUMPENDING}"
     NUMPENDING=$(kubectl get deployments | grep blockchain-explorer | awk '{print $5}' | grep 0 | wc -l | awk '{print $1}')
-    sleep 1
+    sleep 5
 done
 echo "Blockchain Explorer Created Successfully"

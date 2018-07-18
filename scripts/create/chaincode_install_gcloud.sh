@@ -28,7 +28,7 @@ kubectl create -f ${KUBECONFIG_FOLDER}/chaincode_install.yaml
 JOBSTATUS=$(kubectl get jobs |grep chaincodeinstall |awk '{print $3}')
 while [ "${JOBSTATUS}" != "1" ]; do
     echo "Waiting for chaincodeinstall job to be completed"
-    sleep 1;
+    sleep 5;
     if [ "$(kubectl get pods --show-all| grep chaincodeinstall | awk '{print $3}')" == "Error" ]; then
         echo "Chaincode Install Failed"
         exit 1

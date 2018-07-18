@@ -33,7 +33,7 @@ podSTATUS=$(kubectl get pods  --show-all --selector=job-name=copyartifacts --out
 
 while [ "${podSTATUS}" != "Running" ]; do
     echo "Wating for container of copy artifact pod to run. Current status of ${pod} is ${podSTATUS}"
-    sleep 5;
+    sleep 15;
     if [ "${podSTATUS}" == "Error" ]; then
         echo "There is an error in copyartifacts job. Please check logs."
         exit 1
